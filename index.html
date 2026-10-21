@@ -323,20 +323,24 @@
         }
 
         function closeModalBtn() {
-            document.getElementById('productModal').classList.remove('active');
+          }
+
+<script src="products.js"></script>
+
+<script>
+window.addEventListener('load', () => {
+    if (typeof renderProducts === 'function') {
+        renderProducts('الكل');
+    }
+    setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+            splash.style.opacity = '0';
+            setTimeout(() => splash.style.display = 'none', 500);
         }
-    <script src="products.js"></script>
-    
-        window.addEventListener('load', () => {
-            renderProducts('الكل');
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if (splash) {
-                    splash.style.opacity = '0';
-                    setTimeout(() => splash.style.display = 'none', 500);
-                }
-            }, 1200);
-        });
-  </script>
+    }, 1200);
+});
+</script>
 </body>
 </html>
+  
