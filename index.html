@@ -1,0 +1,467 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أبو سليم للأواني المنزلية والمفروشات</title>
+    <!-- مكتبة الشعارات الرسمية لمواصلات التواصل الاجتماعي -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f1f5f9;
+            --text-color: #0f172a;
+            --card-bg: #ffffff;
+            --header-bg: #0c1b33; /* لون لوحة المحل الأزرق الفخم */
+            --sidebar-bg: #ffffff;
+            --border-color: #cbd5e1;
+            --chip-bg: #e2e8f0;
+            --chip-text: #1e293b;
+        }
+        [data-theme="dark"] {
+            --bg-color: #090d16;
+            --text-color: #f8fafc;
+            --card-bg: #111c30;
+            --header-bg: #050b14;
+            --sidebar-bg: #111c30;
+            --border-color: #1e293b;
+            --chip-bg: #1e293b;
+            --chip-text: #f8fafc;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* شاشة الفتح الترحيبية */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--header-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: #fff;
+            transition: opacity 0.5s ease;
+        }
+        #splash-screen img {
+            width: 95px; height: 95px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #38bdf8;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        #splash-screen h2 {
+            font-size: 17px;
+            margin: 0;
+            text-align: center;
+            padding: 0 20px;
+            color: #38bdf8;
+            font-weight: bold;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            color: #fff;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* الشريط الأفقي للأقسام بلون واضح ومرتب */
+        .categories-bar {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 12px 15px;
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .categories-bar::-webkit-scrollbar { display: none; }
+        .cat-chip {
+            background: var(--chip-bg);
+            color: var(--chip-text);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .cat-chip.active, .cat-chip:hover {
+            background: #0284c7;
+            color: white;
+            border-color: #0284c7;
+        }
+
+        .container {
+            padding: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .product-card:active { transform: scale(0.98); }
+        .product-img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            background-color: #cbd5e1;
+        }
+        .product-info {
+            padding: 10px;
+            text-align: center;
+        }
+        .product-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 4px 0;
+            color: var(--text-color);
+        }
+        .product-price {
+            font-size: 13px;
+            color: #e11d48;
+            font-weight: bold;
+        }
+
+        /* القائمة الجانبية بخطوط واضحة جداً وتصميم فاخر */
+        .sidebar {
+            position: fixed;
+            top: 0; right: -320px;
+            width: 290px;
+            height: 100%;
+            background-color: var(--sidebar-bg);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+            transition: 0.3s;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .sidebar.active { right: 0; }
+        .close-btn {
+            background: none; border: none;
+            font-size: 24px; cursor: pointer;
+            color: var(--text-color);
+            float: left;
+        }
+        .sidebar-header {
+            text-align: center;
+            margin-top: 30px;
+        }
+        /* لوحة المحل داخل القائمة الجانبية */
+        .sidebar-banner {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .sidebar ul {
+            list-style: none; padding: 0; margin-top: 15px;
+        }
+        .sidebar li {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+        .sidebar li:hover { background: rgba(2, 132, 199, 0.1); color: #0284c7; }
+        
+        .sidebar h4 {
+            font-size: 14px;
+            color: #0284c7;
+            margin: 20px 0 8px 0;
+            font-weight: bold;
+        }
+        .sidebar p {
+            font-size: 13px;
+            margin: 5px 0;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            font-size: 22px;
+        }
+        .social-links a { text-decoration: none; }
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none; z-index: 999;
+        }
+        .overlay.active { display: block; }
+
+        /* نافذة عرض المنتج المكبرة */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .modal-img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .whatsapp-btn {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: var(--header-bg);
+            color: #fff;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة الفتح الترحيبية -->
+    <div id="splash-screen">
+        <img src="20261020_183349.png" alt="شعار أبو سليم">
+        <h2>أبو سليم للأواني المنزلية والمفروشات</h2>
+    </div>
+
+    <header>
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        <div style="text-align: center;">
+            <h1 style="margin:0; font-size:15px;">أبو سليم للأواني المنزلية والمفروشات</h1>
+        </div>
+        <img src="20261020_183349.png" alt="Logo" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border: 1px solid #fff;">
+    </header>
+
+    <!-- القائمة الجانبية -->
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" onclick="toggleMenu()">✕</button>
+        <div class="sidebar-header">
+            <img src="20261020_183349.png" alt="Logo" style="width:55px; height:55px; border-radius:50%; object-fit:cover;">
+            <h3 style="margin:8px 0 2px 0; font-size:15px; color:var(--text-color);">أبو سليم للأواني المنزلية والمفروشات</h3>
+            <p style="font-size:11px; color:#0284c7; margin:0; font-weight:bold;">لوحة المحل الرئيسية</p>
+            <!-- إضافة لوحة المحل هنا بوضوح -->
+            <img src="20261020_173331.jpg" alt="لوحة المحل" class="sidebar-banner">
+        </div>
+        
+        <ul>
+            <li onclick="toggleTheme()">🌓 تفعيل الوضع (الداكن / الفاتح)</li>
+            <li style="color:#d97706;">🚚 خدمة التوصيل قريباً (داخل مدينة الروضة)</li>
+        </ul>
+        
+        <h4>📞 خدمة العملاء</h4>
+        <p>📱 771310058</p>
+        <p>📱 773353454</p>
+        
+        <h4>📍 العنوان</h4>
+        <p>شبوة - الروضة - الشارع العام بجانب محلات بن رعدد</p>
+        
+        <h4>تابعنا عبر منصاتنا</h4>
+        <div class="social-links">
+            <a href="https://www.facebook.com/profile.php?id=100063969243222" target="_blank" style="color: #1877f2;" title="فيسبوك"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com/slymzbl38/" target="_blank" style="color: #e4405f;" title="انستقرام"><i class="fab fa-instagram"></i></a>
+            <a href="https://m.youtube.com/@Alrawdahtoday" target="_blank" style="color: #ff0000;" title="يوتيوب"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.tiktok.com/@slymzbl_38?_r=1&_d=" target="_blank" style="color: #010101;" title="تيك توك"><i class="fab fa-tiktok"></i></a>
+        </div>
+    </div>
+
+    <!-- شريط الأقسام الأفقي -->
+    <div class="categories-bar" id="categories-bar">
+        <div class="cat-chip active" onclick="filterCategory('الكل', this)">الكل</div>
+        <div class="cat-chip" onclick="filterCategory('المفروشات والاسفنج', this)">المفروشات والاسفنج</div>
+        <div class="cat-chip" onclick="filterCategory('الأواني والمستلزمات المنزلية', this)">الأواني والمستلزمات المنزلية</div>
+        <div class="cat-chip" onclick="filterCategory('البلاستيكيات والأدوات المنزلية', this)">البلاستيكيات والأدوات المنزلية</div>
+        <div class="cat-chip" onclick="filterCategory('أدوات التخزين والترتيب', this)">أدوات التخزين والترتيب</div>
+        <div class="cat-chip" onclick="filterCategory('مستلزمات الضيافة والتقديم', this)">مستلزمات الضيافة والتقديم</div>
+        <div class="cat-chip" onclick="filterCategory('مستلزمات المطبخ وأدوات الطهي', this)">مستلزمات المطبخ وأدوات الطهي</div>
+        <div class="cat-chip" onclick="filterCategory('أدوات ومعدات التنظيف', this)">أدوات ومعدات التنظيف</div>
+        <div class="cat-chip" onclick="filterCategory('الديكور والمستلزمات الخارجية', this)">الديكور والمستلزمات الخارجية</div>
+        <div class="cat-chip" onclick="filterCategory('المفارش والسجاد والستائر', this)">المفارش والسجاد والستائر</div>
+        <div class="cat-chip" onclick="filterCategory('الأدوات والكهربائيات المنزلية الخفيفة', this)">الأدوات والكهربائيات المنزلية الخفيفة</div>
+        <div class="cat-chip" onclick="filterCategory('مستلزمات الحمام', this)">مستلزمات الحمام</div>
+        <div class="cat-chip" onclick="filterCategory('العناية والترتيب المنزلي', this)">العناية والترتيب المنزلي</div>
+    </div>
+
+    <div class="container">
+        <div class="products-grid" id="products-container">
+            <!-- ستعرض المنتجات هنا تلقائياً -->
+        </div>
+    </div>
+
+    <!-- نافذة عرض المنتج المكبرة -->
+    <div class="modal" id="productModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModalBtn()">✕</button>
+            <img id="modalImg" class="modal-img" src="" alt="">
+            <h3 id="modalTitle" style="margin:10px 0; font-size:18px;"></h3>
+            <p id="modalPrice" style="color:#e11d48; font-size:18px; font-weight:bold; margin:5px 0;"></p>
+            <a id="modalWhatsapp" href="#" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب عبر واتساب</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة باسم محل أبو سليم للأواني المنزلية والمفروشات</p>
+    </footer>
+
+    <!-- ربط ملف المنتجات المستقل للتحديث التلقائي أولاً -->
+    <script src="products.js"></script>
+    <script>
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        let currentCategory = 'الكل';
+
+        function renderProducts(category = 'الكل') {
+            const container = document.getElementById('products-container');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            let filtered = (typeof products !== 'undefined' && Array.isArray(products)) ? products : [];
+            if (category !== 'الكل') {
+                filtered = filtered.filter(p => p.category === category);
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column: span 2; color:#64748b; padding:20px; font-weight:bold;">لا توجد منتجات في هذا القسم حالياً.</p>';
+                return;
+            }
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.onclick = () => openModal(p);
+                card.innerHTML = `
+                    <img src="${p.image}" alt="${p.name}" class="product-img" onerror="this.src='20261020_183349.png'">
+                    <div class="product-info">
+                        <div class="product-title">${p.name}</div>
+                        <div class="product-price">${p.price}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterCategory(category, element) {
+            currentCategory = category;
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+            if (element) element.classList.add('active');
+            renderProducts(category);
+        }
+
+        function openModal(p) {
+            document.getElementById('modalImg').src = p.image;
+            document.getElementById('modalTitle').textContent = p.name;
+            document.getElementById('modalPrice').textContent = p.price;
+            document.getElementById('modalWhatsapp').href = `https://wa.me/967773353454?text=السلام عليكم، أريد طلب هذا المنتج: ${encodeURIComponent(p.name)} - السعر: ${encodeURIComponent(p.price)}`;
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'productModal') {
+                document.getElementById('productModal').classList.remove('active');
+            }
+        }
+
+        function closeModalBtn() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        // تشغيل عرض المنتجات وإخفاء شاشة الترحيب بسلاسة فور تحميل السكريبت
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts('الكل');
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) {
+                    splash.style.opacity = '0';
+                    setTimeout(() => splash.style.display = 'none', 400);
+                }
+            }, 800);
+        });
+    </script>
+</body>
+</html>
